@@ -81,7 +81,7 @@ It is quite easy to modify the values of the parameters for the training process
 you just need to pass them as CLI arguments. 
 For example this how test "mpiBS0RS0" (batchsize = 0 and random seed = 0) is run:  
 ```
-mpirun -np 3 /home/mate/test/build/som.mpi datafile=/home/mate/test/tests/dataset.txt latticedim=10 batchsize=0 epochs=20 outevery=10 rseed=0 epcall=/home/mate/test/build/libepcall.so
+mpirun -np 3 /home/mate/test/build/som.mpi dataset=/home/mate/test/tests/dataset.txt latticedim=10 batchsize=0 epochs=20 outevery=10 rseed=0 epcall=/home/mate/test/build/libepcall.so
 ```
 
 As it can be seen you can provide a dynamic library for the "epcall" parameter containing an 
