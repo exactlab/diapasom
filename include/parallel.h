@@ -1,0 +1,53 @@
+// DIAPASOM - DIstributed And PArallel Self Organizing Maps 
+// 
+// Copyright (c) 2022, eXact lab (<https://www.exact-lab.it>) All Rights Reserved.
+// You may use, distribute and modify this code under the
+// terms of the BSD 4-clause license. 
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT 
+//  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       
+// FITNESS FOR A PARTICULAR PURPOSE. 
+//
+// You should have received a copy of the BSD 4-clause license along 
+// with DIAPASOM; see the file LICENSE. If not see 
+// <https://en.wikipedia.org/wiki/BSD_licenses>.
+//
+//
+// Authors: 
+//     Matteo Barnaba <matteo.barnaba@exact-lab.it>
+//     Matteo Poggi <matteo.poggi@exact-lab.it>
+//     Giuseppe Piero Brandino <giuseppe.brandino@exact-lab.it>
+//
+
+#ifndef SOM_PARALLEL_H_GUARD 
+#define SOM_PARALLEL_H_GUARD 
+
+
+void 
+parallel_initialize(unsigned* rank, unsigned* ranks); 
+
+void 
+parallel_finalize(); 
+
+const char* 
+parallel_backend(); 
+
+
+void* 
+parallel_malloc(unsigned bytes); 
+
+void 
+parallel_free(void* ptr); 
+
+
+void 
+parallel_broadcast(void* ptr, unsigned bytes, unsigned root); 
+
+void 
+parallel_sum_all_double(const double* local, double* global, unsigned count); 
+
+void 
+parallel_max_all_double(const double* local, double* global, unsigned count); 
+
+
+#endif // SOM_PARALLEL_H_GUARD 

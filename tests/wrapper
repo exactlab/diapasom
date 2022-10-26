@@ -1,0 +1,18 @@
+#! /bin/sh 
+
+# Simple wrapper that permits writing the out and err each rank separately  
+
+
+executable="$1" 
+shift 
+
+
+env > env
+
+rank="${OMPI_COMM_WORLD_RANK}"
+
+${executable} $@ \
+    1>"rank${rank}.out" \
+    2>"rank${rank}.err" \
+
+exit 0
