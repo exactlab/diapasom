@@ -1,4 +1,5 @@
 # DIAPASOM - DIstributed And PArallel Self Organizing Maps 
+![diapasom splash image](imgs/diapasom.png?raw=true "DIstributed And PArallel Self Organizing Maps")
 
 Simple implementation of the parallel data-partitioned batch SOM algorithm, 
 see section 3.2 of 
