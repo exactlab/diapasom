@@ -29,7 +29,11 @@ for build in Debug Release; do
     mkdir -p $bindir
 
     cd $bindir 
-    cmake -DCMAKE_BUILD_TYPE="$build" $srcdir 
+    cmake \
+        -D CMAKE_BUILD_TYPE="$build" \
+        $srcdir 
+
     make -j 
+    make install 
     cd $srcdir
 done 

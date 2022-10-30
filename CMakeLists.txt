@@ -31,10 +31,7 @@ foreach( language IN ITEMS CXX )
 endforeach()
 
 add_compile_options(
-    -Wall -Wextra -pedantic -Werror -fmax-errors=1
-)
-add_link_options(
-    "LINKER:--copy-dt-needed-entries"
+    -Wall -Wextra -pedantic -fmax-errors=1
 )
 
 
@@ -81,29 +78,32 @@ message( STATUS "implementations: ${implementations}" )
 
 
 
-message( STATUS "building core som ibrary" )
+message( STATUS "building core diapasom ibrary" )
 set( cpps dataset lattice )
 foreach( cpp IN ITEMS ${cpps} )
     list( APPEND sources "${CMAKE_SOURCE_DIR}/src/${cpp}.cpp" ) 
 endforeach()
 
-set( coreLib "somcore" ) 
+set( coreObject "diapasomCore" ) 
 set( includes "${CMAKE_SOURCE_DIR}/include" )
 
 add_library(
-    ${coreLib}
-    SHARED
-    ${sources}
+    ${coreObject}
+    OBJECT 
+        ${sources}
+)
+target_compile_options(
+    ${coreObject}
+    PRIVATE -fPIC
 )
 target_include_directories(
-    ${coreLib}
+    ${coreObject}
     PUBLIC 
-    ${includes}
+        ${includes}
 )
 target_link_libraries( # dlopen() support
-    ${coreLib}
-    PRIVATE
-    dl
+    ${coreObject}
+    PUBLIC dl
 )
 
 foreach( implementation IN ITEMS ${implementations} )  
@@ -111,9 +111,9 @@ foreach( implementation IN ITEMS ${implementations} )
 
     set( sources "${CMAKE_SOURCE_DIR}/src/parallel.c" ) 
     
-    set( parallelLib "som_parallel_${implementation}" )
-    set( mainLib "som_${implementation}" )
-    set( executable "som.${implementation}" )
+    set( parallelObject "diapasomParallel_${implementation}" )
+    set( mainLib "diapasom_${implementation}" )
+    set( executable "diapasom.${implementation}" )
 
     set( includes "${CMAKE_SOURCE_DIR}/include" )
     set( definitions )
@@ -146,43 +146,48 @@ foreach( implementation IN ITEMS ${implementations} )
 
     # the parallel library
     add_library(
-        ${parallelLib}
-        SHARED
-        ${sources}
+        ${parallelObject}
+        OBJECT
+            ${sources}
     )
     target_include_directories(
-        ${parallelLib}
+        ${parallelObject}
         PUBLIC 
-        ${includes}
+            ${includes}
+    )
+    target_compile_options(
+        ${parallelObject}
+        PRIVATE -fPIC 
     )
     target_compile_definitions(
-        ${parallelLib} 
-        PRIVATE 
-        ${definitions}
+        ${parallelObject}
+        PRIVATE
+            ${definitions}
     )
     target_link_libraries(
-        ${parallelLib}
-        PRIVATE 
-        ${libraries}
+        ${parallelObject}
+        PUBLIC 
+            ${libraries}
     )
 
     # the main SOM library
     add_library( 
         ${mainLib} 
         SHARED
-        "${CMAKE_SOURCE_DIR}/src/som.cpp"
+            "${CMAKE_SOURCE_DIR}/src/som.cpp"
     )
     target_include_directories(
         ${mainLib}
         PUBLIC 
-        ${includes}
+            ${includes}
     )
     target_link_libraries(
         ${mainLib}
-        PRIVATE
-        ${coreLib}  
-        ${parallelLib}
+        PUBLIC 
+            ${coreObject}
+            ${parallelObject}
     )
+
 
     add_executable(
         ${executable}
@@ -191,7 +196,7 @@ foreach( implementation IN ITEMS ${implementations} )
     target_link_libraries(
         ${executable}
         PRIVATE
-        ${mainLib} 
+            ${mainLib} 
     )
 
     list( APPEND targets "${coreLib}" "${parallelLib}" "${mainLib}" "${executable}" )
@@ -202,6 +207,7 @@ set( CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib" )
 list( REMOVE_DUPLICATES targets )
 install( 
     TARGETS ${targets}
+    EXPORT "diapasom"
     RUNTIME DESTINATION "bin" 
     LIBRARY DESTINATION "lib"
     ARCHIVE DESTINATION "lib/static"    
@@ -210,6 +216,10 @@ install(
     DIRECTORY "${CMAKE_SOURCE_DIR}/include"
     DESTINATION "include"
     FILES_MATCHING PATTERN "*.h*" 
+)
+install(
+    EXPORT "diapasom" 
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake"
 )
 
 

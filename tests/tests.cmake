@@ -42,7 +42,7 @@ foreach( dataset IN ITEMS 1 2 )
             set( outfolder "${testsOutFolderBase}/${testname}" )
             file( MAKE_DIRECTORY "${outfolder}" )
 
-            set( executable "${CMAKE_BINARY_DIR}/som.${implementation}" )
+            set( executable "${CMAKE_BINARY_DIR}/diapasom.${implementation}" )
             set( cmd "${CMAKE_SOURCE_DIR}/tests/wrapper ${executable}" )
 
             if ( "${implementation}" STREQUAL "mpi" )
@@ -50,7 +50,7 @@ foreach( dataset IN ITEMS 1 2 )
             endif()
 
             if ( "${implementation}" STREQUAL "oshmem" )
-                set( cmd "${oshmemFolder}/bin/shmemrun -np 3 ${cmd}" )
+                set( cmd "${oshmemFolder}/bin/shmemrun -quiet -np 3 ${cmd}" )
             endif()
 
             string( 
