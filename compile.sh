@@ -22,7 +22,8 @@
 #! /bin/sh 
 
 
-srcdir="$( pwd )"
+srcdir="$( realpath $(dirname $0) )"
+currdir="$( realpath . )"
 
 for build in Debug Release; do
     bindir="build/${build}"
@@ -35,5 +36,5 @@ for build in Debug Release; do
 
     make -j 
     make install 
-    cd $srcdir
+    cd $currdir
 done 

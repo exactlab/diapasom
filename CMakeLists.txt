@@ -214,7 +214,7 @@ install(
 )
 install(
     DIRECTORY "${CMAKE_SOURCE_DIR}/include"
-    DESTINATION "include"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}"
     FILES_MATCHING PATTERN "*.h*" 
 )
 install(
