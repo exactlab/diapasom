@@ -122,7 +122,7 @@ class State
 }; // class State  
 
 /* This takes care that the parallel infrastructure is initialized and it initialized only once */
-inline State state{}; 
+extern State* state; 
 
 
 
@@ -130,25 +130,25 @@ inline State state{};
 inline
 unsigned 
 rank() noexcept 
-{ return som::parallel::state.rank(); }
+{ return som::parallel::state->rank(); }
 
 /** @brief Returns the total number ranks of the computation */ 
 inline
 unsigned 
 ranks() noexcept 
-{ return som::parallel::state.ranks(); }
+{ return som::parallel::state->ranks(); }
 
 /** @brief Returns the name of the parallel backend in use */ 
 inline 
 const char* 
 backend() noexcept 
-{ return som::parallel::state.backend(); }
+{ return som::parallel::state->backend(); }
 
 /** @brief Returns a handle to the Timer object used by the parallel infrastructure */
 inline 
 const Timer<std::chrono::microseconds>& 
 timer() noexcept 
-{ return som::parallel::state.timer(); }
+{ return som::parallel::state->timer(); }
 
 
 /** @brief Allocates (contiguous) memory for count elements of type T that 
@@ -332,6 +332,7 @@ State::State()
     ); 
 }
 
+
 inline 
 State::~State() noexcept
 {
@@ -344,6 +345,7 @@ State::~State() noexcept
         self.backend(), "finalizing"
     }; 
     parallel_finalize(); 
+    context.results( "done" );
     self.mrank = self.mranks = 0; 
 }
 
@@ -420,7 +422,7 @@ template <class T>
 void 
 Memory<T>::broadcast(unsigned root) noexcept
 {
-    som::parallel::state.broadcast(
+    som::parallel::state->broadcast(
         static_cast<void*>( self.get() ),
         self.bytes(), 
         root
@@ -433,7 +435,7 @@ void
 Memory<double>::sum_all(som::parallel::Memory<double>& dst) const noexcept 
 {
     assert( self.bytes() == dst.bytes() );  
-    som::parallel::state.sum_all(
+    som::parallel::state->sum_all(
         self.cbegin(), 
         dst.bebin(), 
         self.size()
@@ -446,7 +448,7 @@ void
 Memory<double>::max_all(som::parallel::Memory<double>& dst) const noexcept 
 {
     assert( self.bytes() == dst.bytes() );  
-    som::parallel::state.max_all(
+    som::parallel::state->max_all(
         self.cbegin(), 
         dst.bebin(), 
         self.size()

@@ -26,8 +26,19 @@ using som::TrainSettings;
 using som::Lattice; 
 
 
+namespace som::parallel 
+{
+    State* state = nullptr; 
+}
+
+
 int main(const int argc, const char* argv[]) 
 {
+    som::parallel::State state{}; 
+    som::parallel::state = &state; 
+
+    myprint::debug( "porco dio" ); 
+
     /* Create the object that stores the command-line arguments */
     parameters::CliArgsParser cliargs{ argc, argv };    
     
@@ -43,5 +54,7 @@ int main(const int argc, const char* argv[])
 
     /* Launch the training process of the Lattice for the given settings */
     lattice.train( settings ); 
+
+    myprint::debug( "dio porco" ); 
     return 0; 
 }
