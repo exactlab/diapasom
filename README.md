@@ -8,7 +8,7 @@ see section 3.2 of
 
 ### Documentation 
 
-To genetate the documentation simply run
+To generate the documentation simply run
 ```
 doxygen 
 ``` 
